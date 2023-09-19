@@ -12,20 +12,16 @@ use jojoe77777\FormAPI\SimpleForm;
 class TNTForm implements Listener {
 
     public static function execute(Player $player, int $blastRadius = 4): void {
-        $form = new CustomForm(function (Player $player, ?array $data) use ($blastRadius, $event) {
+        $form = new CustomForm(function (Player $player, ?array $data) use ($blastRadius) {
             if ($data !== null) {
                 $radius = max(1, min(25, $data[0]));
 
-                $confirmForm = new SimpleForm(function (Player $player, int $data) use ($radius, $event, $blastRadius) {
+                $confirmForm = new SimpleForm(function (Player $player, int $data) use ($radius) {
                     if ($data === 0) {
-                        $tnt = $event->getEntity();
-                        if ($tnt instanceof PrimedTNT) {
-                            $scaledRadius = max(1, min(25, $radius));
-                            $event->setRadius($scaledRadius);
-                            $player->sendMessage("Blast radius set to: " . $scaledRadius);
-                        } else {
-                            $player->sendMessage("Blast radius change canceled.");
-                        }
+                        $scaledRadius = max(1, min(25, $radius));
+                        self::changeBlastRadius($player, $scaledRadius);
+                    } else {
+                        $player->sendMessage("Blast radius change canceled.");
                     }
                 });
                 $confirmForm->setTitle("Confirm Radius");
@@ -39,5 +35,12 @@ class TNTForm implements Listener {
         $form->setTitle("TNT Blast Radius");
         $form->addSlider("Radius:", 1, 25, 1, $blastRadius);
         $player->sendForm($form);
+    }
+
+    public static function changeBlastRadius(Player $player, int $radius): void {
+        // Handle the blast radius change here, e.g., apply it to the exploding TNT entities.
+        $tnt = $player->getLevel()->spawnEntity($player->getPosition(), EntityIds::PRIMED_TNT);
+        $tnt->setRadius($radius);
+        $player->sendMessage("Blast radius set to: " . $radius);
     }
 }
