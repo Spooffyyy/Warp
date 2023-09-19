@@ -8,6 +8,8 @@ use pocketmine\entity\object\PrimedTNT;
 use pocketmine\player\Player;
 use jojoe77777\FormAPI\CustomForm;
 use jojoe77777\FormAPI\SimpleForm;
+use pocketmine\world\Explosion;
+use pocketmine\world\Position;
 
 class TNTForm implements Listener {
 
@@ -18,8 +20,8 @@ class TNTForm implements Listener {
 
                 $confirmForm = new SimpleForm(function (Player $player, int $data) use ($radius) {
                     if ($data === 0) {
-                        $scaledRadius = max(1, min(25, $radius));
-                        self::changeBlastRadius($player, $scaledRadius);
+                        
+                        self::changeBlastRadius($player, $radius);
                     } else {
                         $player->sendMessage("Blast radius change canceled.");
                     }
@@ -38,8 +40,14 @@ class TNTForm implements Listener {
     }
 
     public static function changeBlastRadius(Player $player, int $radius): void {
-        $tnt = $player->getWorld()->spawnEntity($player->getPosition(), PrimedTNT::class);
+        $tnt = new PrimedTNT(Position::fromObject($player->getPosition(), $player->getWorld()));
+        $tnt->setFuse(80);
         $tnt->setRadius($radius);
+        $player->getWorld()->spawnEntity($tnt);
+        $explosion = new Explosion($tnt->asPosition(), $tnt->getRadius(), $tnt);
+        $explosion->explodeA();
+        $explosion->explodeB();
+
         $player->sendMessage("Blast radius set to: " . $radius);
     }
 }
