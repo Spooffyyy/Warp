@@ -3,51 +3,38 @@
 namespace Terpz710\TNTBlastRadius;
 
 use pocketmine\event\Listener;
-use pocketmine\event\entity\EntityPreExplodeEvent;
+use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\player\Player;
 use jojoe77777\FormAPI\CustomForm;
-use jojoe77777\FormAPI\SimpleForm;
-use pocketmine\world\Explosion;
-use pocketmine\world\Position;
 
 class TNTForm implements Listener {
 
-    public static function execute(Player $player, int $blastRadius = 4): void {
-        $form = new CustomForm(function (Player $player, ?array $data) use ($blastRadius) {
+    public static function execute(Player $player): void {
+        $form = new CustomForm(function (Player $player, ?array $data) {
             if ($data !== null) {
-                $radius = max(1, min(25, $data[0]));
+                $radius = max(1, min(25, (int)$data[0]));
 
-                $confirmForm = new SimpleForm(function (Player $player, int $data) use ($radius) {
-                    if ($data === 0) {
-                        
-                        self::changeBlastRadius($player, $radius);
-                    } else {
-                        $player->sendMessage("Blast radius change canceled.");
-                    }
-                });
-                $confirmForm->setTitle("Confirm Radius");
-                $confirmForm->setContent("Are you sure you want to set the TNT blast radius to $radius?");
-                $confirmForm->addButton("Yes");
-                $confirmForm->addButton("No");
-                $player->sendForm($confirmForm);
+                $player->setTNTExplosionSize($radius);
+
+                $player->sendMessage("Blast radius set to: " . $radius);
             }
         });
 
         $form->setTitle("TNT Blast Radius");
-        $form->addSlider("Radius:", 1, 25, 1, $blastRadius);
+        $form->addSlider("Radius:", 1, 25, 1, 1);
         $player->sendForm($form);
     }
 
-    public static function changeBlastRadius(Player $player, int $radius): void {
-        $tnt = new PrimedTNT(Position::fromObject($player->getPosition(), $player->getWorld()));
-        $tnt->setFuse(80);
-        $tnt->setRadius($radius);
-        $player->getWorld()->spawnEntity($tnt);
-        $explosion = new Explosion($tnt->asPosition(), $tnt->getRadius(), $tnt);
-        $explosion->explodeA();
-        $explosion->explodeB();
+    public function onExplosionPrime(ExplosionPrimeEvent $event) {
+        $entity = $event->getEntity();
+        if ($entity instanceof PrimedTNT) {
+            $player = $entity->getOwningEntity();
+            if ($player instanceof Player) {
+                $radius = $player->getTNTExplosionSize();
 
-        $player->sendMessage("Blast radius set to: " . $radius);
+                $entity->setRadius($radius);
+            }
+        }
     }
 }
