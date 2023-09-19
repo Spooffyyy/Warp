@@ -38,8 +38,7 @@ class TNTForm implements Listener {
     }
 
     public static function changeBlastRadius(Player $player, int $radius): void {
-        // Handle the blast radius change here, e.g., apply it to the exploding TNT entities.
-        $tnt = $player->getLevel()->spawnEntity($player->getPosition(), EntityIds::PRIMED_TNT);
+        $tnt = $player->getLevel()->spawnEntity($player->getPosition(), PrimedTNT::class);
         $tnt->setRadius($radius);
         $player->sendMessage("Blast radius set to: " . $radius);
     }
