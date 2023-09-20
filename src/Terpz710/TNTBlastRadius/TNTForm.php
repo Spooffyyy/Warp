@@ -11,7 +11,7 @@ use pocketmine\event\entity\EntityPreExplodeEvent;
 
 class TNTForm implements Listener {
 
-    private static $blastRadius = 4;
+    private static $blastRadius = 1;
 
     public static function execute(Player $player): void {
         $form = new CustomForm(function (Player $player, ?array $data) {
@@ -30,6 +30,7 @@ class TNTForm implements Listener {
                 $confirmation->setContent("Are you sure you want to set the TNT blast radius to " . self::$blastRadius . "?");
                 $confirmation->addButton("Yes");
                 $confirmation->addButton("No");
+
                 $player->sendForm($confirmation);
             }
         });
