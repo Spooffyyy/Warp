@@ -5,6 +5,10 @@ main: Terpz710\TNTBlastRadius\Main
 author: Terpz710
 description: Edit TNT blast radius.
 depend: [FormAPI]
+commands:
+  setradius:
+    description: Set TNT blast radius.
+    usage: /setradius
 permissions:
   tntradius.command:
     description: Allows players to use the /tntradius command.
