@@ -1,6 +1,6 @@
 <?php
 
-namespace Terpz710;
+namespace Terpz710\TNTBlastRadius;
 
 use jojoe77777\FormAPI\CustomForm;
 use pocketmine\command\Command;
@@ -11,7 +11,7 @@ use pocketmine\event\Listener;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
-class TNTBlastRadius extends PluginBase implements Listener {
+class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
