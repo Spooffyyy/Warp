@@ -19,7 +19,7 @@ class Main extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    public function onEntityPreExplodeEvent() {
+    public function onEntityPreExplodeEvent(EntityPreExplodeEvent $event) {
         $tnt = $event->getEntity();
         if ($tnt instanceof PrimedTNT) {
             $event->setRadius($this->blastRadius);
