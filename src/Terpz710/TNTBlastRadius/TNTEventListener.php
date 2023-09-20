@@ -9,10 +9,10 @@ use pocketmine\event\entity\EntityPreExplodeEvent;
 class TNTEventListener implements Listener {
 
     public function onExplosionPrime(EntityPreExplodeEvent $event) {
-        $tnt = $event->getEntity();
-        if ($tnt instanceof PrimedTNT) {
-            $scaledRadius = max(1, min(25, TNTForm::$blastRadius));
-            $event->setRadius($scaledRadius);
+    $tnt = $event->getEntity();
+    if ($tnt instanceof PrimedTNT) {
+        $scaledRadius = max(1, min(25, $scaledRadius));
+        $event->setRadius($scaledRadius);
         }
     }
 }
