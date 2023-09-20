@@ -11,7 +11,7 @@ use Terpz710\TNTBlastRadius\TNTEventListener;
 class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
-        $this->getServer()->getPluginManager()->registerEvents(new TNTEventListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new TNTEventListener($this), $this);
         $this->getServer()->getCommandMap()->register("tntradius", new TNTCommand()); // Create instance without parameters
     }
 }
