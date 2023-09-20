@@ -17,7 +17,7 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->getCommand("tntradius")->setPermission("tntradius.command");
+        $this->getServer()->getCommandMap()->getCommand("setradius")->setPermission("tntradius.command");
     }
 
     public function onEntityPreExplodeEvent(EntityPreExplodeEvent $event) {
@@ -34,7 +34,7 @@ class Main extends PluginBase implements Listener {
         }
 
         switch ($command->getName()) {
-            case "tntradius":
+            case "setradius":
                 $this->openRadiusSelectorUI($sender);
                 break;
         }
