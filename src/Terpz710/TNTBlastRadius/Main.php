@@ -6,6 +6,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use Terpz710\TNTBlastRadius\TNTCommand;
 use Terpz710\TNTBlastRadius\TNTForm;
+use Terpz710\TNTBlastRadius\TNTEventListener;
 
 class Main extends PluginBase implements Listener {
 
