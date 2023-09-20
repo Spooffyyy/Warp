@@ -13,6 +13,8 @@ use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener {
 
+    private $blastRadius = 4; // Default blast radius
+
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
@@ -20,8 +22,7 @@ class Main extends PluginBase implements Listener {
     public function onEntityExplosionPrime(EntityExplosionPrimeEvent $event) {
         $entity = $event->getEntity();
         if ($entity instanceof PrimedTNT) {
-            $radius = $entity->getBlastRadius();
-            $event->setRadius($radius);
+            $event->setRadius($this->blastRadius);
         }
     }
 
@@ -35,21 +36,6 @@ class Main extends PluginBase implements Listener {
             case "tntradius":
                 $this->openRadiusSelectorUI($sender);
                 break;
-        
-            case "setradius":
-                if (count($args) !== 1) {
-                    $sender->sendMessage("Usage: /setradius <radius>");
-                    return false;
-                }
-
-                $radius = (int)$args[0];
-                if ($radius >= 1 && $radius <= 25) {
-                    $this->setTNTBlastRadius($sender, $radius);
-                    $sender->sendMessage("TNT blast radius set to $radius");
-                } else {
-                    $sender->sendMessage("Invalid radius value. Please select a number between 1 and 25.");
-                }
-                break;
         }
 
         return true;
@@ -61,6 +47,7 @@ class Main extends PluginBase implements Listener {
                 $radius = (int)$data[0];
                 if ($radius >= 1 && $radius <= 25) {
                     $this->setTNTBlastRadius($player, $radius);
+                    $player->sendMessage("TNT blast radius changed to $radius for all players");
                 } else {
                     $player->sendMessage("Invalid radius value. Please select a number between 1 and 25.");
                 }
@@ -68,21 +55,14 @@ class Main extends PluginBase implements Listener {
         });
 
         $form->setTitle("TNT Blast Radius Selector");
-        $form->addSlider("Select the TNT blast radius:", 1, 25, 4);
+        $form->addSlider("Select the TNT blast radius for all players:", 1, 25, $this->blastRadius);
 
         $player->sendForm($form);
     }
 
     public function setTNTBlastRadius(Player $player, int $radius) {
-        $world = $player->getWorld();
-
-        foreach ($world->getEntities() as $entity) {
-            if ($entity instanceof PrimedTNT) {
-                // Update the TNT blast radius.
-                $entity->setBlastRadius($radius);
-            }
-        }
-
-        $player->sendMessage("TNT blast radius changed to $radius");
+        // Update the TNT blast radius for all TNT entities on the server.
+        $this->blastRadius = $radius;
+        $player->sendMessage("TNT blast radius changed to $radius for all players");
     }
 }
