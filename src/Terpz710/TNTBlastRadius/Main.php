@@ -6,9 +6,9 @@ use jojoe77777\FormAPI\CustomForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\object\PrimedTNT;
-use pocketmine\event\entity\EntityExplodeEvent;
+use pocketmine\event\entity\EntityExplosionPrimeEvent;
 use pocketmine\event\Listener;
-use pocketmine\player\Player;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener {
@@ -17,17 +17,12 @@ class Main extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    public function onEntityExplode(EntityExplodeEvent $event) {
-        $entities = $event->getEntityList();
-        $filteredEntities = [];
-
-        foreach ($entities as $entity) {
-            if (!($entity instanceof PrimedTNT)) {
-                $filteredEntities[] = $entity;
-            }
+    public function onEntityExplosionPrime(EntityExplosionPrimeEvent $event) {
+        $entity = $event->getEntity();
+        if ($entity instanceof PrimedTNT) {
+            $radius = $entity->getBlastRadius();
+            $event->setRadius($radius);
         }
-
-        $event->setEntityList($filteredEntities);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
@@ -83,8 +78,8 @@ class Main extends PluginBase implements Listener {
 
         foreach ($world->getEntities() as $entity) {
             if ($entity instanceof PrimedTNT) {
-                // Update the TNT fuse ticks.
-                $entity->setFuse($radius * 20); // Convert seconds to ticks
+                // Update the TNT blast radius.
+                $entity->setBlastRadius($radius);
             }
         }
 
