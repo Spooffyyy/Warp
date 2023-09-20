@@ -8,7 +8,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\event\entity\EntityExplodeEvent;
 use pocketmine\event\Listener;
-use pocketmine\player\Player;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener {
@@ -18,10 +18,16 @@ class Main extends PluginBase implements Listener {
     }
 
     public function onEntityExplode(EntityExplodeEvent $event) {
-        $entity = $event->getEntity();
-        if ($entity instanceof PrimedTNT) {
-            $event->setCancelled();
+        $entities = $event->getEntityList();
+        $filteredEntities = [];
+
+        foreach ($entities as $entity) {
+            if (!($entity instanceof PrimedTNT)) {
+                $filteredEntities[] = $entity;
+            }
         }
+
+        $event->setEntityList($filteredEntities);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
