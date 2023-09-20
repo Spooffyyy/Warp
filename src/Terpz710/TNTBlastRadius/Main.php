@@ -73,11 +73,11 @@ class Main extends PluginBase implements Listener {
     }
 
     public function setTNTBlastRadius(Player $player, int $radius) {
-        $level = $player->getLevel();
+        $world = $player->getWorld();
 
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof PrimedTNT) {
-                $entity->setBlastRadius($radius);
+                $entity->setRadius($radius);
             }
         }
 
