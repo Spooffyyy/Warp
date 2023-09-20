@@ -20,7 +20,7 @@ class TNTCommand extends Command {
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
         if ($sender instanceof Player) {
             $form = new TNTForm();
-            $form->execute($sender, $this->plugin);
+            $form->execute($sender);
         } else {
             $sender->sendMessage("This command can only be used in-game.");
         }
