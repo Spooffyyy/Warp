@@ -3,15 +3,10 @@
 namespace Terpz710\TNTBlastRadius;
 
 use jojoe77777\FormAPI\CustomForm;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
-use pocketmine\entity\object\PrimedTNT;
 use pocketmine\event\entity\EntityPreExplodeEvent;
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\Config; // Import Config class
-use pocketmine\permission\Permission; // Import Permission class
 
 class Main extends PluginBase implements Listener {
 
@@ -19,12 +14,8 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        
-        // Set the permission for the command
-        $permission = new Permission("tntradius.command");
-        $this->getServer()->getPluginManager()->addPermission($permission);
-        
-        $this->setPermission("tntradius.command");
+        $this->setPermission("tntradius.command"); // Set the permission for the command
+        $this->getServer()->getCommandMap()->register("tntradius", new TNTCommand($this));
     }
 
     public function onEntityPreExplode(EntityPreExplodeEvent $event) {
@@ -32,21 +23,6 @@ class Main extends PluginBase implements Listener {
         if ($tnt instanceof PrimedTNT) {
             $event->setRadius($this->blastRadius);
         }
-    }
-
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
-        if (!$sender instanceof Player) {
-            $sender->sendMessage("§cYou must be in-game to run this command");
-            return true;
-        }
-
-        switch ($command->getName()) {
-            case "tntradius":
-                $this->openRadiusSelectorUI($sender);
-                break;
-        }
-
-        return true;
     }
 
     public function openRadiusSelectorUI(Player $player) {
