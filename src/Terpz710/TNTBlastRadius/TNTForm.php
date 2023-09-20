@@ -11,15 +11,16 @@ use pocketmine\event\entity\EntityPreExplodeEvent;
 
 class TNTForm implements Listener {
 
-    private static $blastRadius = 1;
+    private static $blastRadius = 4;
 
     public static function execute(Player $player): void {
         $form = new CustomForm(function (Player $player, ?array $data) {
             if ($data !== null) {
-                self::$blastRadius = max(1, min(25, (int)$data[0]));
+                $pickedRadius = max(1, min(25, (int)$data[0])); // Get the value picked from the slider
 
-                $confirmation = new SimpleForm(function (Player $player, int $data) {
+                $confirmation = new SimpleForm(function (Player $player, int $data) use ($pickedRadius) {
                     if ($data === 0) {
+                        self::$blastRadius = $pickedRadius; // Set the new blast radius
                         $player->sendMessage("Successfully changed Blast Radius to: " . self::$blastRadius);
                     } else {
                         $player->sendMessage("Blast radius change canceled.");
@@ -27,7 +28,7 @@ class TNTForm implements Listener {
                 });
 
                 $confirmation->setTitle("Confirm Radius");
-                $confirmation->setContent("Are you sure you want to set the TNT blast radius to " . self::$blastRadius . "?");
+                $confirmation->setContent("Are you sure you want to set the TNT blast radius to " . $pickedRadius . "?");
                 $confirmation->addButton("Yes");
                 $confirmation->addButton("No");
 
