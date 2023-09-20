@@ -2,9 +2,6 @@
 
 namespace Terpz710;
 
-
-// TNTCommand.php
-
 namespace Terpz710\TNTBlastRadius;
 
 use pocketmine\command\Command;
