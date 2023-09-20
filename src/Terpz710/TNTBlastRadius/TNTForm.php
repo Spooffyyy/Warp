@@ -7,6 +7,7 @@ use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\player\Player;
 use jojoe77777\FormAPI\CustomForm;
+use jojoe77777\FormAPI\SimpleForm;
 
 class TNTForm implements Listener {
 
@@ -15,9 +16,22 @@ class TNTForm implements Listener {
             if ($data !== null) {
                 $radius = max(1, min(25, (int)$data[0]));
 
-                $player->setTNTExplosionSize($radius);
+                $confirmation = new SimpleForm(function (Player $player, int $data) use ($radius) {
+                    if ($data === 0) {
+                        
+                        $player->sendMessage("Successfully changed Blast Radius to: " . $radius);
+                    } else {
+                        
+                        $player->sendMessage("Blast radius change canceled.");
+                    }
+                });
 
-                $player->sendMessage("Blast radius set to: " . $radius);
+                $confirmation->setTitle("Confirm Radius");
+                $confirmation->setContent("Are you sure you want to set the TNT blast radius to $radius?");
+                $confirmation->addButton("Yes");
+                $confirmation->addButton("No");
+
+                $player->sendForm($confirmation);
             }
         });
 
@@ -27,13 +41,12 @@ class TNTForm implements Listener {
     }
 
     public function onExplosionPrime(ExplosionPrimeEvent $event) {
-        $entity = $event->getEntity();
-        if ($entity instanceof PrimedTNT) {
-            $player = $entity->getOwningEntity();
+        $tnt = $event->getEntity();
+        if ($tnt instanceof PrimedTNT) {
+            $player = $tnt->getOwningEntity();
             if ($player instanceof Player) {
-                $radius = $player->getTNTExplosionSize();
-
-                $entity->setRadius($radius);
+                $scaledRadius = max(1, min(25, $tnt->getRadius()));
+                $event->setRadius($scaledRadius);
             }
         }
     }
