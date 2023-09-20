@@ -6,7 +6,7 @@ use jojoe77777\FormAPI\CustomForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\object\PrimedTNT;
-use pocketmine\event\entity\EntityExplosionPrimeEvent;
+use pocketmine\event\entity\EntityPreExplodeEvent;
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
