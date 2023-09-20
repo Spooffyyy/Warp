@@ -73,9 +73,9 @@ class Main extends PluginBase implements Listener {
     }
 
     public function setTNTBlastRadius(Player $player, int $radius) {
-        $level = $player->getLevel();
+        $world = $player->getWorld();
 
-        foreach ($level->getEntities() as $entity) {
+        foreach ($world->getEntities() as $entity) {
             if ($entity instanceof PrimedTNT) {
                 // Update the TNT fuse ticks.
                 $entity->setFuse($radius * 20); // Convert seconds to ticks
