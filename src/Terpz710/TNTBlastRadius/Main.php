@@ -8,7 +8,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\entity\object\PrimedTNT;
 use pocketmine\event\entity\EntityPreExplodeEvent;
 use pocketmine\event\Listener;
-use pocketmine\player\Player;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener {
@@ -17,10 +17,10 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->getCommand("setradius")->setPermission("tntradius.command");
+        $this->setPermission("tntradius.command"); // Set the permission for the command
     }
 
-    public function onEntityPreExplodeEvent(EntityPreExplodeEvent $event) {
+    public function onEntityPreExplode(EntityPreExplodeEvent $event) {
         $tnt = $event->getEntity();
         if ($tnt instanceof PrimedTNT) {
             $event->setRadius($this->blastRadius);
@@ -34,7 +34,7 @@ class Main extends PluginBase implements Listener {
         }
 
         switch ($command->getName()) {
-            case "setradius":
+            case "tntradius":
                 $this->openRadiusSelectorUI($sender);
                 break;
         }
