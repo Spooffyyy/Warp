@@ -11,24 +11,19 @@ use pocketmine\event\entity\EntityPreExplodeEvent;
 
 class TNTForm implements Listener {
 
-    private static $blastRadius = 4;
-
-    public static function execute(Player $player): void {
-        $form = new CustomForm(function (Player $player, ?array $data) {
+    public function execute(Player $player, int $scaledRadius): void {
+        $form = new CustomForm(function (Player $player, ?array $data) use ($scaledRadius) {
             if ($data !== null) {
-                $pickedRadius = max(1, min(25, (int)$data[0])); // Get the value picked from the slider
-
-                $confirmation = new SimpleForm(function (Player $player, int $data) use ($pickedRadius) {
+                $confirmation = new SimpleForm(function (Player $player, int $data) use ($scaledRadius) {
                     if ($data === 0) {
-                        self::$blastRadius = $pickedRadius; // Set the new blast radius
-                        $player->sendMessage("Successfully changed Blast Radius to: " . self::$blastRadius);
+                        $player->sendMessage("Successfully changed Blast Radius to: " . $scaledRadius);
                     } else {
                         $player->sendMessage("Blast radius change canceled.");
                     }
                 });
 
                 $confirmation->setTitle("Confirm Radius");
-                $confirmation->setContent("Are you sure you want to set the TNT blast radius to " . $pickedRadius . "?");
+                $confirmation->setContent("Are you sure you want to set the TNT blast radius to " . $scaledRadius . "?");
                 $confirmation->addButton("Yes");
                 $confirmation->addButton("No");
 
@@ -37,14 +32,14 @@ class TNTForm implements Listener {
         });
 
         $form->setTitle("TNT Blast Radius");
-        $form->addSlider("Radius:", 1, 25, 1, self::$blastRadius); // Use the stored radius as the default
+        $form->addSlider("Radius:", 1, 25, 1, $scaledRadius); // Use the $scaledRadius as the default
         $player->sendForm($form);
     }
 
     public function onExplosionPrime(EntityPreExplodeEvent $event) {
         $tnt = $event->getEntity();
         if ($tnt instanceof PrimedTNT) {
-            $scaledRadius = max(1, min(25, self::$blastRadius));
+            $scaledRadius = max(1, min(25, $scaledRadius)); // Adjust $scaledRadius as needed
             $event->setRadius($scaledRadius);
         }
     }
