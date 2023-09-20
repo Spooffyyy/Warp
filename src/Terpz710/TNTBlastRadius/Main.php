@@ -6,9 +6,9 @@ use jojoe77777\FormAPI\CustomForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\object\PrimedTNT;
-use pocketmine\event\entity\EntityPreExplodeEvent;
+use pocketmine\event\entity\EntityExplodeEvent;
 use pocketmine\event\Listener;
-use pocketmine\player\Player;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener {
@@ -17,9 +17,9 @@ class Main extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    public function onExplosionPrime(EntityPreExplodeEvent $event) {
-        $tnt = $event->getEntity();
-        if ($tnt instanceof PrimedTNT) {
+    public function onEntityExplode(EntityExplodeEvent $event) {
+        $entity = $event->getEntity();
+        if ($entity instanceof PrimedTNT) {
             $event->setCancelled();
         }
     }
@@ -77,8 +77,8 @@ class Main extends PluginBase implements Listener {
 
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof PrimedTNT) {
-                // Update the TNT blast radius.
-                $entity->setBlastRadius($radius);
+                // Update the TNT fuse ticks.
+                $entity->setFuse($radius * 20); // Convert seconds to ticks
             }
         }
 
