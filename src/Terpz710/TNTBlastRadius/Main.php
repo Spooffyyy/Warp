@@ -4,6 +4,7 @@ namespace Terpz710\TNTBlastRadius;
 
 use jojoe77777\FormAPI\CustomForm;
 use pocketmine\event\entity\EntityPreExplodeEvent;
+use pocketmine\entity\object\PrimedTNT;
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
@@ -14,8 +15,6 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->setPermission("tntradius.command"); // Set the permission for the command
-        $this->getServer()->getCommandMap()->register("tntradius", new TNTCommand($this));
     }
 
     public function onEntityPreExplode(EntityPreExplodeEvent $event) {
