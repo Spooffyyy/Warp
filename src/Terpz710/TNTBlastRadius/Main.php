@@ -70,14 +70,12 @@ class Main extends PluginBase implements Listener {
         $form->addSlider("Select the TNT blast radius:", 1, 25, 4);
 
         $player->sendForm($form);
-    }
 
-    public function setTNTBlastRadius(Player $player, int $radius) {
-        $world = $player->getWorld();
-
-        foreach ($level->getEntities() as $entity) {
-            if ($entity instanceof PrimedTNT) {
-                $entity->setRadius($radius);
+    public function setTNTBlastRadius(EntityPreExplodeEvent $event) {
+        $tnt = $event->getEntity();
+        if ($tnt instanceof PrimedTNT) {
+            $scaledRadius = max(1, min(25, $radius));
+            $event->setRadius($scaledRadius);
             }
         }
 
