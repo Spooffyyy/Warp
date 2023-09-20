@@ -10,6 +10,8 @@ use pocketmine\event\entity\EntityPreExplodeEvent;
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config; // Import Config class
+use pocketmine\permission\Permission; // Import Permission class
 
 class Main extends PluginBase implements Listener {
 
@@ -17,7 +19,12 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->setPermission("tntradius.command"); // Set the permission for the command
+        
+        // Set the permission for the command
+        $permission = new Permission("tntradius.command");
+        $this->getServer()->getPluginManager()->addPermission($permission);
+        
+        $this->setPermission("tntradius.command");
     }
 
     public function onEntityPreExplode(EntityPreExplodeEvent $event) {
