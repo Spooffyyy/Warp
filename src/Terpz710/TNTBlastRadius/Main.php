@@ -20,7 +20,7 @@ class Main extends PluginBase implements Listener {
     public function onExplosionPrime(EntityPreExplodeEvent $event) {
         $tnt = $event->getEntity();
         if ($tnt instanceof PrimedTNT) {
-            $event->setCancelled(); // Prevent the explosion for now.
+            $event->setCancelled();
         }
     }
 
@@ -33,6 +33,21 @@ class Main extends PluginBase implements Listener {
         switch ($command->getName()) {
             case "tntradius":
                 $this->openRadiusSelectorUI($sender);
+                break;
+        
+            case "setradius":
+                if (count($args) !== 1) {
+                    $sender->sendMessage("Usage: /setradius");
+                    return false;
+                }
+
+                $radius = (int)$args[0];
+                if ($radius >= 1 && $radius <= 25) {
+                    $this->setTNTBlastRadius($sender, $radius);
+                    $sender->sendMessage("TNT blast radius set to $radius");
+                } else {
+                    $sender->sendMessage("Invalid radius value. Please select a number between 1 and 25.");
+                }
                 break;
         }
 
@@ -52,7 +67,7 @@ class Main extends PluginBase implements Listener {
         });
 
         $form->setTitle("TNT Blast Radius Selector");
-        $form->addSlider("Select the TNT blast radius:", 1, 25, 1, 4);
+        $form->addSlider("Select the TNT blast radius:", 1, 25, 4);
 
         $player->sendForm($form);
     }
